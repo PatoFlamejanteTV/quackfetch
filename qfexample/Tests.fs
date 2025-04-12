@@ -1,4 +1,4 @@
-﻿open quackfetchcore
+﻿open qfcore
 open System
 
 let getMachineInfo () =

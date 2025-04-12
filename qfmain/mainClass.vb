@@ -1,14 +1,27 @@
-Imports quackfetchcore
+Imports qfcore
 
 Module Program '"Program" means that this module is a VB.NET program
     'and bla bla bla
     Sub Main() ' Main function, the one gets called when the app starts
         Console.WriteLine(
             "Machine ID: " &
-            quackfetchcore.MachineInfo.GetMachineId()
+            MachineInfo.GetMachineId()
             )
+
         Console.WriteLine(
+            "Distro: " &
+            MachineInfo.GetPrettyName()
             )
+
+        Console.WriteLine(
+            "Kernel: " &
+            MachineInfo.GetKernel()
+            )
+
+        'Console.WriteLine(
+        '    "Packages: " &
+        '    MachineInfo.GetPackages()
+        '    )
 #If DEBUG Then
         Console.ReadLine()
 #End If

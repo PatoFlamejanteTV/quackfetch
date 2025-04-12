@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace quackfetchcore
+namespace qfcore
 {
     public class MachineInfo
     {
@@ -17,34 +17,7 @@ namespace quackfetchcore
         {
             /*
              * Ported from Neofetch's machine ID system.
-             *
-             * Neofetch is licensed under MIT License:
-             *
-             */
-
-            /*
-               The MIT License (MIT)
-
-               Copyright (c) 2015-2021 Dylan Araps
-
-               Permission is hereby granted, free of charge, to any person obtaining
-               a copy of this software and associated documentation files (the
-               "Software"), to deal in the Software without restriction, including
-               without limitation the rights to use, copy, modify, merge, publish,
-               distribute, sublicense, and/or sell copies of the Software, and to
-               permit persons to whom the Software is furnished to do so, subject to
-               the following conditions:
-
-               The above copyright notice and this permission notice shall be included
-               in all copies or substantial portions of the Software.
-
-               THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-               EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-               MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-               IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-               CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-               TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-               SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+             * Neofetch is licensed under MIT License
              */
 
             string model = "";
@@ -100,23 +73,28 @@ namespace quackfetchcore
                     model = hwModel;
                 }
             }
-            /*else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            /*else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // VERY WIP
             {
                 // Utilizando WMI para obter informações do sistema no Windows
                 try
                 {
                     using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Manufacturer, Model FROM Win32_ComputerSystem"))
+                    using (ManagementObjectCollection results = searcher.Get())
                     {
-                        foreach (ManagementObject queryObj in searcher.Get())
+                        foreach (ManagementObject queryObj in results)
                         {
                             string manufacturer = queryObj["Manufacturer"]?.ToString().Trim() ?? "";
                             string computerModel = queryObj["Model"]?.ToString().Trim() ?? "";
 
-                            model = $"{manufacturer} {computerModel}";
+                            if (!string.IsNullOrWhiteSpace(manufacturer) || !string.IsNullOrWhiteSpace(computerModel))
+                            {
+                                model = $"{manufacturer} {computerModel}".Trim();
+                                break;
+                            }
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Fallback se WMI falhar
                     model = $"Windows PC ({Environment.MachineName})";
@@ -229,6 +207,191 @@ namespace quackfetchcore
             model = Regex.Replace(model, @"\s+", " ").Trim();
 
             return model;
+        }
+
+        public static string GetPrettyName()
+        {
+            // Check if /etc/os-release exists
+            string osReleasePath = "/etc/os-release";
+            if (File.Exists(osReleasePath))
+            {
+                var lines = File.ReadAllLines(osReleasePath);
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("PRETTY_NAME="))
+                    {
+                        // Extract PRETTY_NAME
+                        return line.Split('=')[1].Trim('"');
+                    }
+                }
+            }
+
+            // Fallback: Check other files
+            string[] fallbackFiles = { "/etc/lsb-release", "/etc/debian_version", "/etc/redhat-release" };
+            foreach (var path in fallbackFiles)
+            {
+                if (File.Exists(path))
+                {
+                    return File.ReadAllText(path).Trim();
+                }
+            }
+
+            // If all else fails, return unknown
+            return "Unknown";
+        }
+
+        public static string GetKernel()
+        {
+            try
+            {
+                // Create a new process to run the "uname -r" command
+                Process process = new Process();
+                process.StartInfo.FileName = "uname";
+                process.StartInfo.Arguments = "-r"; // Fetch kernel version
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+
+                // Start the process and read the output
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                // Return the trimmed output
+                return output.Trim();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                return "Unknown";
+            }
+        }
+
+        public static string GetPackages()
+        {
+            int packages = 0;
+            int pkgs_h = 0;
+            string manager = null;
+            var managers = new List<string>();
+            var managerString = string.Empty;
+
+            bool Has(string command)
+            {
+                return RunCommand($"type {command}", out _) == 0;
+            }
+
+            int RunCommand(string command, out string output)
+            {
+                try
+                {
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "cmd.exe" : "bash",
+                            Arguments = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                                ? $"/c {command}"
+                                : $"-c \"{command}\"",
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        }
+                    };
+
+                    process.Start();
+                    output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                    return process.ExitCode;
+                }
+                catch
+                {
+                    output = string.Empty;
+                    return -1;
+                }
+            }
+
+            int intRunCommand(string command)
+            {
+                return RunCommand(command, out _);
+            }
+
+            void Tot(string command)
+            {
+                if (RunCommand(command, out var output) == 0)
+                {
+                    var pkgs = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                    packages += pkgs.Length;
+                    Pac(pkgs.Length - pkgs_h);
+                }
+            }
+
+            void Dir(string path)
+            {
+                var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories).ToArray();
+                packages += files.Length;
+                Pac(files.Length - pkgs_h);
+            }
+
+            void Pac(int count)
+            {
+                if (count > 0)
+                {
+                    managers.Add($"{count} ({manager})");
+                    managerString += $"{manager}, ";
+                }
+            }
+
+            // Example logic for Linux package managers
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
+                if (Has("pacman"))
+                {
+                    manager = "pacman";
+                    Tot("pacman -Qq --color never");
+                }
+
+                if (Has("dpkg"))
+                {
+                    manager = "dpkg";
+                    Tot("dpkg-query -f '.\\n' -W");
+                }
+
+                if (Has("rpm"))
+                {
+                    manager = "rpm";
+                    Tot("rpm -qa");
+                }
+
+                // Add more package managers here...
+            }
+            else if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                // Example logic for Windows package managers
+                if (Has("choco"))
+                {
+                    manager = "choco";
+                    Dir(@"C:\ProgramData\chocolatey\lib");
+                }
+
+                if (Has("scoop"))
+                {
+                    manager = "scoop";
+                    Dir(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\scoop\apps");
+                }
+            }
+
+            if (packages == 0)
+            {
+                return "No packages found";
+            }
+            else
+            {
+                var result = packages.ToString();
+                result += $" ({managerString.TrimEnd(',', ' ')})";
+                return result;
+            }
         }
     }
 }
