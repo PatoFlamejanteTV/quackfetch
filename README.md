@@ -10,8 +10,15 @@ Also, this project contains DockerFiles btw.
 ### Using your code
 Do whatever u want, just follow the `MIT License` thing.
 
-### Using your util
+### Using your util(s)
+#### Core
+Use it like a lib or a "back-end".
+
+#### CLI-Interface ("vbpart")
 Just open terminal and execute it, i guess.
+
+#### Testa
+Use VS or JetBrains Rider to execute the testa.
 
 ### Debugging
 Yes, theres some debugging functions/methods to testing QuackFetch, suggestions open btw.
