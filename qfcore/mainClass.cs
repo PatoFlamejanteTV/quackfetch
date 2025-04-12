@@ -19,14 +19,14 @@ namespace quackfetchcore
              * Ported from Neofetch's machine ID system.
              *
              * Neofetch is licensed under MIT License:
-             * 
+             *
              */
-            
+
             /*
                The MIT License (MIT)
-               
+
                Copyright (c) 2015-2021 Dylan Araps
-               
+
                Permission is hereby granted, free of charge, to any person obtaining
                a copy of this software and associated documentation files (the
                "Software"), to deal in the Software without restriction, including
@@ -34,10 +34,10 @@ namespace quackfetchcore
                distribute, sublicense, and/or sell copies of the Software, and to
                permit persons to whom the Software is furnished to do so, subject to
                the following conditions:
-               
+
                The above copyright notice and this permission notice shall be included
                in all copies or substantial portions of the Software.
-               
+
                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
                EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
                MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -46,7 +46,7 @@ namespace quackfetchcore
                TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
                SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
              */
-            
+
             string model = "";
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -81,13 +81,14 @@ namespace quackfetchcore
                 else
                 {
                     // Caso não encontre, tenta usar o comando lshw
-                    model = ExecuteShellCommand("lshw -c system | grep product | head -1").Replace("product:", "").Trim();
+                    model = ExecuteShellCommand("lshw -c system | grep product | head -1").Replace("product:", "")
+                        .Trim();
                 }
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 string hwModel = ExecuteShellCommand("sysctl -n hw.model").Trim();
-                
+
                 // Verificando se é Hackintosh
                 string kextstat = ExecuteShellCommand("kextstat | grep -F -e \"FakeSMC\" -e \"VirtualSMC\"").Trim();
                 if (!string.IsNullOrEmpty(kextstat))
@@ -110,7 +111,7 @@ namespace quackfetchcore
                         {
                             string manufacturer = queryObj["Manufacturer"]?.ToString().Trim() ?? "";
                             string computerModel = queryObj["Model"]?.ToString().Trim() ?? "";
-                            
+
                             model = $"{manufacturer} {computerModel}";
                         }
                     }
@@ -229,7 +230,5 @@ namespace quackfetchcore
 
             return model;
         }
-        
-        
     }
 }
