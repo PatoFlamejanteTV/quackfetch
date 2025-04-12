@@ -6,6 +6,22 @@
         <Nullable>enable</Nullable>
         <AssemblyName>qfcore</AssemblyName>
         <RootNamespace>qfcore</RootNamespace>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>QuackFetchCore</Title>
+        <Authors>UltimateQuack</Authors>
+        <Description>Core of the QuackFetch system.</Description>
+        <Copyright>MIT License, UltimateQuack</Copyright>
+        <PackageProjectUrl>https://github.com/PatoFlamejanteTV/quackfetch/</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/PatoFlamejanteTV/quackfetch/blob/main/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/PatoFlamejanteTV/quackfetch/</RepositoryUrl>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+    </ItemGroup>
 
 </Project>
