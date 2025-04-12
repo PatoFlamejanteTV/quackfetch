@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qfcore", "qfcore\qfcore.csp
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "qfmain", "qfmain\qfmain.vbproj", "{9D5B053A-5AC1-4CD2-97BC-83BF034F6D09}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F6CC7152-C7E9-446D-A21B-1437E5072EB6}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "qfexample", "qfexample\qfexample.fsproj", "{319F7E6A-418C-4E50-B1D5-16D37A3ECC3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,12 @@ Global
 		{9D5B053A-5AC1-4CD2-97BC-83BF034F6D09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D5B053A-5AC1-4CD2-97BC-83BF034F6D09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D5B053A-5AC1-4CD2-97BC-83BF034F6D09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{319F7E6A-418C-4E50-B1D5-16D37A3ECC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{319F7E6A-418C-4E50-B1D5-16D37A3ECC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{319F7E6A-418C-4E50-B1D5-16D37A3ECC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{319F7E6A-418C-4E50-B1D5-16D37A3ECC3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{319F7E6A-418C-4E50-B1D5-16D37A3ECC3C} = {F6CC7152-C7E9-446D-A21B-1437E5072EB6}
 	EndGlobalSection
 EndGlobal
