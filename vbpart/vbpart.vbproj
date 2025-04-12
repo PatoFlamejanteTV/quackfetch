@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>quackfetchmain</RootNamespace>
+        <TargetFramework>net9.0</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <AssemblyName>quackfetchmain</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\librarytest\librarytest.csproj" />
+    </ItemGroup>
+
+</Project>
