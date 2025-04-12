@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "librarytest", "librarytest\librarytest.csproj", "{1C83B4E9-D3A5-4F12-889F-028B779230A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qfcore", "qfcore\qfcore.csproj", "{1C83B4E9-D3A5-4F12-889F-028B779230A7}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "vbpart", "vbpart\vbpart.vbproj", "{9D5B053A-5AC1-4CD2-97BC-83BF034F6D09}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "qfmain", "qfmain\qfmain.vbproj", "{9D5B053A-5AC1-4CD2-97BC-83BF034F6D09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

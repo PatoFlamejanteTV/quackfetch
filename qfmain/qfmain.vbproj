@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\librarytest\librarytest.csproj" />
+      <ProjectReference Include="..\qfcore\qfcore.csproj" />
     </ItemGroup>
 
 </Project>
