@@ -17,7 +17,7 @@ Use it like a lib or a "back-end".
 #### CLI-Interface ("vbpart")
 Just open terminal and execute it, i guess.
 
-#### Testa
+#### Tests
 Use VS or JetBrains Rider to execute the testa.
 
 ### Debugging
