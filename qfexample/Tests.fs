@@ -1,6 +1,13 @@
 ﻿open qfcore
 open System
 
+/// Small note here:
+/// Im NOT a big brain on F#, so i (kinda) "vibe coded" this and fixed by hand.
+/// So, please, dont tag me in any issue about this, like a vulnerability or some
+/// shit.
+/// Btw this is just a TEST file and can (and will) be possible ignored to the
+/// average user
+
 let getMachineInfo () =
     try
         let machineId = MachineInfo.GetMachineId()

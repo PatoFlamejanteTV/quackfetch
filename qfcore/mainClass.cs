@@ -56,6 +56,7 @@ public class MachineInfo
         }
         /*else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // VERY WIP
         {
+        // TODO: Ter vergonha na cara e fazer um metodo melhor pra isso.
             // Utilizando WMI para obter informações do sistema no Windows
             try
             {

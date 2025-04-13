@@ -22,6 +22,7 @@ Module Program '"Program" means that this module is a VB.NET program
         '    "Packages: " &
         '    MachineInfo.GetPackages()
         '    )
+        ' BUG: Somehow it opens fucking pacman when i display the packages amount wtf
 #If DEBUG Then
         Console.ReadLine()
 #End If
