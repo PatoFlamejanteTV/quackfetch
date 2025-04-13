@@ -56,7 +56,7 @@ public class MachineInfo
         }
         /*else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // VERY WIP
         {
-        // TODO: Ter vergonha na cara e fazer um metodo melhor pra isso.
+        // TODO: Ter vergonha na cara e fazer um metodo melhor (e funcional) pra isso.
             // Utilizando WMI para obter informações do sistema no Windows
             try
             {
@@ -173,7 +173,7 @@ public class MachineInfo
             "Type1ProductConfigId",
             "INVALID",
             "All Series",
-            "�"
+            "�" // damn! This code is squarephobic!
         };
 
         foreach (var unwanted in unwantedStrings) model = model.Replace(unwanted, "");
@@ -354,5 +354,58 @@ public class MachineInfo
         var result = packages.ToString();
         result += $" ({managerString.TrimEnd(',', ' ')})";
         return result;
+    }
+
+    public static string GetLocalIP()
+    {
+        try
+        {
+            // Platform-agnostic approach to get IP address
+            using var socket = new System.Net.Sockets.Socket(
+                System.Net.Sockets.AddressFamily.InterNetwork,
+                System.Net.Sockets.SocketType.Dgram,
+                System.Net.Sockets.ProtocolType.Udp);
+
+            // Connect to a public address (doesn't actually send data)
+            socket.Connect("8.8.8.8", 65530);
+
+            // Get the local endpoint as an IPEndPoint
+            if (socket.LocalEndPoint is System.Net.IPEndPoint endPoint)
+            {
+                return endPoint.Address.ToString();
+            }
+
+            // Fall back to platform-specific methods if the socket approach fails
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ||
+                RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                foreach (var networkInterface in
+                         System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (networkInterface.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up)
+                        continue;
+
+                    var properties = networkInterface.GetIPProperties();
+                    foreach (var address in properties.UnicastAddresses)
+                    {
+                        if (address.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork &&
+                            !System.Net.IPAddress.IsLoopback(address.Address))
+                        {
+                            return address.Address.ToString();
+                        }
+                    }
+                }
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return ExecuteShellCommand("ipconfig getifaddr en0").Trim();
+            }
+
+            throw new Exception("Could not find a suitable IP address");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error determining local IP address: {ex.Message}", ex);
+        }
     }
 }
